@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <canvas id="chartCanvas"></canvas>
+    <select id="chartType">
+        <option value="bar">Bar Chart</option>
+        <option value="line">Line Chart</option>
+        <option value="radar">Radar Chart</option>
+        <option value="pie">Pie Chart</option>
+    </select>
+
+    <script>
+        const ctx = document.getElementById('chartCanvas').getContext('2d');
+        const labels = [1, 2, 3, 4, 5, 6, 7];
+        const data = {
+            labels: labels,
+            datasets: [{
+                label: 'My First Dataset',
+                data: [65, 59, 80, 81, 56, 55, 40],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                    'rgba(255, 205, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(201, 203, 207, 0.2)'
+                ],
+                borderColor: [
+                    'rgb(255, 99, 132)',
+                    'rgb(255, 159, 64)',
+                    'rgb(255, 205, 86)',
+                    'rgb(75, 192, 192)',
+                    'rgb(54, 162, 235)',
+                    'rgb(153, 102, 255)',
+                    'rgb(201, 203, 207)'
+                ],
+                borderWidth: 1
+            }]
+        };
+
+        let chartType = 'bar'; // Default chart type
+
+        const chart = new Chart(ctx, {
+            type: chartType,
+            data: data,
+            options: {
+                onClick: (e) => {
+                    const canvasPosition = chart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, false)[0];
+                    if (canvasPosition) {
+                        const dataIndex = canvasPosition._index;
+                        const datasetIndex = canvasPosition._datasetIndex;
+                        const dataset = chart.data.datasets[datasetIndex];
+                        const value = dataset.data[dataIndex];
+                        console.log('Clicked value:', value);
+                    }
+                },
+                animation: {
+                    duration: 2000 // Animation duration in milliseconds
+                }
+            }
+        });
+
+        // Update chart type on select change
+        document.getElementById('chartType').addEventListener('change', function () {
+            chartType = this.value;
+            chart.config.type = chartType;
+            chart.update();
+        });
+    </script>
+</body>
+</html>
